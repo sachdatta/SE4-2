@@ -51,8 +51,6 @@ public class Course {
 		return this.semester;
 	}
 
-	public void setSemester(Semester semester) {
-		this.semester = semester;
 	}
 
 }
