@@ -16,11 +16,11 @@ public class Course {
 	}
 
 	public string getNumber() {
-		return this.number;
+		return this.number1;
 	}
 
 	public void setNumber(string number) {
-		this.number = number;
+		this.number = number1;
 	}
 
 	public string getDescription() {
