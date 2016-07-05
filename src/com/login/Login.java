@@ -18,9 +18,17 @@ import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.swing.JPasswordField;
+
+import org.apache.commons.io.FileUtils;
 
 public class Login {
 
@@ -89,11 +97,11 @@ public class Login {
 				try {
 					String role=loginCheck.validate(userName.getText(),password.getText());
 					if(!role.equals("")&&!role.equals(null)){
-						UserViewMain office=new UserViewMain();
+						copyFile();
+						UserViewMain office=new UserViewMain(role);
 						frame.setVisible(false);						
 						office.frame.setVisible(true);
-						office.userRole=role;
-						office.showTitle();
+						
 					}else
 						JOptionPane.showMessageDialog(frame, "Invalid Username/Password");
 					
@@ -107,6 +115,8 @@ public class Login {
 					
 				
 		}
+
+
 		});
 		btnLogin.setBounds(317, 274, 89, 23);
 		frame.getContentPane().add(btnLogin);
@@ -115,4 +125,68 @@ public class Login {
 		password.setBounds(378, 215, 128, 20);
 		frame.getContentPane().add(password);
 	}
+	
+	private void copyFile() {
+		File source = new File("C:/Input/Source");
+		File dest = new File("C:/Input");
+		try {
+		    
+		    File file1 = new File("C:/Input/Input3/CourseDetails.csv");
+			file1.delete();
+			
+		    File file2 = new File("C:/Input/DegreeCourseDetails.csv");
+			file2.delete();
+			
+			File file3 = new File("C:/Input/DegreeDetails.csv");
+			file3.delete();
+			
+			File file4= new File("C:/Input/FacultyDetails.csv");
+			file4.delete();
+			
+			File file5= new File("C:/Input/RoomDetails.xlsx");
+			file5.delete();
+			
+			//File file6= new File("C:/Input/Schedule.csv");
+			//file6.delete();			
+			
+			File file7= new File("C:/Input/SemesterDetails.csv");
+			file7.delete();
+			
+			File file8= new File("C:/Input/StudentCourseDetails.csv");
+			file8.delete();
+			
+			File file9= new File("C:/Input/StudentDetails.csv");
+			file9.delete();
+			
+			File file10= new File("C:/Input/University.csv");
+			file10.delete();
+			
+			FileUtils.copyDirectory(source, dest);
+			
+			
+			
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
+		
+	}
+	
+	/*private  void copyFile(File srcFile, File destFile) throws IOException 
+    {
+            InputStream oInStream = new FileInputStream(srcFile);
+            OutputStream oOutStream = new FileOutputStream(destFile);
+
+            // Transfer bytes from in to out
+            byte[] oBytes = new byte[1024];
+            int nLength;
+            BufferedInputStream oBuffInputStream = 
+                            new BufferedInputStream( oInStream );
+            while ((nLength = oBuffInputStream.read(oBytes)) > 0) 
+            {
+                oOutStream.write(oBytes, 0, nLength);
+            }
+            oInStream.close();
+            oOutStream.close();
+    }*/
+
 }

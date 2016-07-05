@@ -32,7 +32,7 @@ public class ImportMain {
 
 	public JFrame frame;
 	public String selectedOption="";
-	public String userRole="COURSE";
+	public String userRole;
 	private JTextField filePath;
 	@SuppressWarnings("rawtypes")
 	private JList resultList;
@@ -64,6 +64,10 @@ public class ImportMain {
 	public ImportMain() {
 		initialize();
 	}
+	public ImportMain(String role) {
+		userRole=role;
+		initialize();
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -91,9 +95,8 @@ public class ImportMain {
 			public void actionPerformed(ActionEvent arg0) {
 				UserViewMain userMain;
 				try {
-					userMain = new UserViewMain();
+					userMain = new UserViewMain(userRole);
 					frame.setVisible(false);					
-					userMain.userRole=userRole;
 					userMain.frame.setVisible(true);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
