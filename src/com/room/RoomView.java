@@ -46,6 +46,11 @@ public class RoomView {
 		initialize();
 	}
 
+	public RoomView(String userRole2) {
+		userRole=userRole2;
+		initialize();
+	}
+
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -72,7 +77,7 @@ public class RoomView {
 			public void actionPerformed(ActionEvent arg0) {
 				RoomMain room;
 				try {
-					room = new RoomMain();
+					room = new RoomMain(userRole);
 					frame.setVisible(false);
 					room.userRole=userRole;
 					room.frame.setVisible(true);

@@ -49,6 +49,11 @@ public class RoomMain {
 		initialize();
 	}
 
+	public RoomMain(String userRole2) throws IOException {
+		userRole=userRole2;
+		initialize();
+	}
+
 	/**
 	 * Initialize the contents of the frame.
 	 * @throws IOException 
@@ -73,11 +78,18 @@ public class RoomMain {
 		JButton btnBack = new JButton("Back");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				UserViewMain office=new UserViewMain();				
-				frame.setVisible(false);
-				office.userRole=userRole;
-				office.frame.setVisible(true);
+				UserViewMain office;
+				try {
+					office = new UserViewMain(userRole);
+					frame.setVisible(false);
+					office.userRole=userRole;
+					office.frame.setVisible(true);
 
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+				
 			}
 		});
 		btnBack.setBounds(42, 11, 89, 23);
@@ -180,7 +192,7 @@ public class RoomMain {
 	}
 
 	private void addRoom() throws Exception {
-		RoomView facultyFrame= new RoomView();
+		RoomView facultyFrame= new RoomView(userRole);
 		facultyFrame.reload();
 		frame.setVisible(false);
 		facultyFrame.frame.setVisible(true);
@@ -189,7 +201,7 @@ public class RoomMain {
 	}
 	
 	private void updateRoom() throws Exception {
-		RoomView facultyFrame= new RoomView();
+		RoomView facultyFrame= new RoomView(userRole);
 		if(roomList.getSelectedValue() != null){
 				String selected=roomList.getSelectedValue().toString().split(" ")[0];
 				facultyFrame.viewSelected(selected);
