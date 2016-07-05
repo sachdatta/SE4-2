@@ -1,16 +1,28 @@
 package com.schedule;
 
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
+import com.csvreader.CsvReader;
+import com.csvreader.CsvWriter;
 import com.login.Login;
 import com.login.UserViewMain;
+
 import javax.swing.JLabel;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.Font;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 
 
@@ -18,6 +30,15 @@ public class ScheduleMain {
 
 	public JFrame frame;
 	public String userRole;
+	public boolean first=true;
+	private JTable table;
+	private static final String FILE_PATH = "C:/Input/Schedule.csv";
+	public String[][] sectionValues;
+	public String[][] update;
+	private JScrollPane scrollPane ;
+	private int count=0;
+	public boolean String;
+	
 
 	/**
 	 * Launch the application.
@@ -37,15 +58,23 @@ public class ScheduleMain {
 
 	/**
 	 * Create the application.
+	 * @throws Exception 
 	 */
-	public ScheduleMain() {
+	public ScheduleMain() throws Exception {
 		initialize();
+	}
+
+	public ScheduleMain(String role) throws Exception {
+		userRole=role;
+		initialize();
+		
 	}
 
 	/**
 	 * Initialize the contents of the frame.
+	 * @throws Exception 
 	 */
-	private void initialize() {
+	private void initialize() throws Exception {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 706, 503);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -65,52 +94,101 @@ public class ScheduleMain {
 		JButton btnBack = new JButton("Back");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				UserViewMain office=new UserViewMain();
-				
-				frame.setVisible(false);				
-				office.userRole=userRole;
-				office.frame.setVisible(true);
+				UserViewMain office;
+				try {
+					office = new UserViewMain(userRole);
+					frame.setVisible(false);				
+					office.userRole=userRole;
+					office.frame.setVisible(true);
 
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
 			}
 		});
 		btnBack.setBounds(42, 11, 89, 23);
 		frame.getContentPane().add(btnBack);
 		
-		JButton btnAdd = new JButton("Add");
-		btnAdd.addActionListener(new ActionListener() {
+		sectionValues=new String[count][8];
+		sectionValues=getData();
+		
+		table = new JTable();
+		table.setModel(new DefaultTableModel(
+				sectionValues,			
+			new String[] {
+				"Course Id", "Course Name", "Section Id","Student Count", "Teacher", "Students","Day","Year&Sem"
+			}
+		));
+	//table.setBounds(34, 76, 608, 348);
+		
+		scrollPane = new JScrollPane( table );
+		scrollPane.setBounds(34, 76, 608, 348);
+		frame.getContentPane().add(scrollPane);
+		
+		JLabel lblSchedule = new JLabel("Schedule");
+		lblSchedule.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblSchedule.setBounds(309, 35, 122, 14);
+		frame.getContentPane().add(lblSchedule);
+		
+		JButton btnGenerate = new JButton(" Generate");
+		btnGenerate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				sectionValues=new String[count][8];
 				try {
-					addSchedule();
+					generate();
+					sectionValues=getData();					
+					table.setModel(new DefaultTableModel(
+							sectionValues,			
+						new String[] {
+							"Course Id", "Course Name", "Section Id","Student Count", "Teacher","Students", "Day","Year&Sem"
+						}));
+					table.updateUI();
+					scrollPane.updateUI();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		});
-		btnAdd.setBounds(92, 313, 89, 23);
-		frame.getContentPane().add(btnAdd);
+		btnGenerate.setBounds(449, 42, 89, 23);
+		frame.getContentPane().add(btnGenerate);
 		
-		JButton btnUpdate = new JButton("Update");
-		btnUpdate.setBounds(300, 313, 89, 23);
-		frame.getContentPane().add(btnUpdate);
-		
-		JButton btnDelete = new JButton("Delete");
-		btnDelete.setBounds(462, 313, 89, 23);
-		frame.getContentPane().add(btnDelete);
-		
-		JLabel lblScheduleManagement = new JLabel("Schedule Management");
-		lblScheduleManagement.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblScheduleManagement.setBounds(256, 54, 219, 23);
-		frame.getContentPane().add(lblScheduleManagement);
-
+				
 	}
 	
-
-	private void addSchedule()throws Exception {
-		ScheduleView schV= new ScheduleView();		
-		frame.setVisible(false);
-		schV.frame.setVisible(true);
-		schV.action="ADD";
-		
+	public void generate() throws Exception{
+		GenerateSchedule g=new GenerateSchedule();	
+		g.readData();
 	}
+
+	private String[][] getData() throws Exception {	
+		
+		CsvReader section = new CsvReader(FILE_PATH);
+		section.readHeaders();
+		String[][] data=new String[100][8];
+		//ArrayList<ScheduleSection> sectionList=new ArrayList<ScheduleSection>();
+		int i=0;
+		count=0;
+		while(section.readRecord()){
+			for(int j=0;j<8;j++){
+				if(Integer.parseInt(section.get(3))>=17&&!section.get(4).equals("Not available"))
+				data[i][j]=section.get(j);
+			}
+			if(Integer.parseInt(section.get(3))>=17&&!section.get(4).equals("Not available")){
+				i++;
+				count++;
+			}
+			
+		}
+		section.close();
+		if(i==0&&!first){			
+			JOptionPane.showMessageDialog(frame, "No student&course records found");			
+		}
+		first=false;
+		return data;
+	}
+	
 }
