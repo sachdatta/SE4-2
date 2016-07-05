@@ -48,6 +48,10 @@ public class DegreeMain {
 	public DegreeMain() throws IOException {
 		initialize();
 	}
+	public DegreeMain(String role) throws IOException {
+		userRole=role;
+		initialize();
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -58,6 +62,11 @@ public class DegreeMain {
 		frame.setBounds(100, 100, 706, 503);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+		
+		JLabel lblLoggesAs = new JLabel("Logged as "+userRole+" User");
+		lblLoggesAs.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblLoggesAs.setBounds(141, 14, 129, 14);
+		frame.getContentPane().add(lblLoggesAs);
 		
 		JButton btnLogout = new JButton("Logout");
 		btnLogout.addActionListener(new ActionListener() {
@@ -73,12 +82,19 @@ public class DegreeMain {
 		JButton btnBack = new JButton("Back");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				UserViewMain office=new UserViewMain();
-				
-				frame.setVisible(false);
-				office.userRole=userRole;
-				office.frame.setVisible(true);
+				UserViewMain office;
+				try {
+					office = new UserViewMain(userRole);
 
+					frame.setVisible(false);
+					office.userRole=userRole;
+					office.frame.setVisible(true);
+
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}
 		});
 		btnBack.setBounds(42, 11, 89, 23);
@@ -144,7 +160,8 @@ public class DegreeMain {
 		String cList[] = new String[100];
 		int i=0;
 		for(Degree c:avl){
-			cList[i]=c.getDegreeCode()+" "+c.getDegreeDescription();
+			if(i%3==0)
+				cList[i]=c.getDegreeCode();
 			i++;
 		}
 		degreeList = new JList(cList);		
@@ -161,9 +178,8 @@ public class DegreeMain {
 			try {
 				{
 					DegreeEvent fe=new DegreeEvent();
-					String code=degreeList.getSelectedValue().toString().split(" ")[0];
-					String description=degreeList.getSelectedValue().toString().substring(code.length()+1, degreeList.getSelectedValue().toString().length());
-					fe.deleteDegree(code,description);
+					String code=degreeList.getSelectedValue().toString();
+					fe.deleteDegree(code);
 					dialog("Degree deleted sucessfully");
 				}
 			} catch (Exception e) {
@@ -183,7 +199,7 @@ public class DegreeMain {
 	}
 
 	private void addDegree() throws Exception {
-		DegreeView degreeFrame= new DegreeView();
+		DegreeView degreeFrame= new DegreeView(userRole);
 		degreeFrame.reload();
 		frame.setVisible(false);
 		degreeFrame.frame.setVisible(true);
@@ -192,11 +208,10 @@ public class DegreeMain {
 	}
 	
 	private void updateDegree() throws Exception {
-		DegreeView degreeFrame= new DegreeView();
+		DegreeView degreeFrame= new DegreeView(userRole);
 		if(degreeList.getSelectedValue() != null){
-			String code=degreeList.getSelectedValue().toString().split(" ")[0];
-			String description=degreeList.getSelectedValue().toString().substring(code.length()+1, degreeList.getSelectedValue().toString().length());
-				degreeFrame.viewSelected(code,description);
+			String code=degreeList.getSelectedValue().toString();
+				degreeFrame.viewSelected(code);
 				frame.setVisible(false);
 				degreeFrame.frame.setVisible(true);
 				degreeFrame.action="UPDATE";

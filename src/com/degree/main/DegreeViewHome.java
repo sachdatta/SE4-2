@@ -45,6 +45,12 @@ public class DegreeViewHome {
 	 */
 	public DegreeViewHome() {
 		initialize();
+		reload();
+	}
+
+	public DegreeViewHome(String string) {
+		action=string;
+		initialize();
 	}
 
 	/**
@@ -101,7 +107,7 @@ public class DegreeViewHome {
 		degreeCode.setBounds(187, 104, 177, 20);
 		frame.getContentPane().add(degreeCode);
 		degreeCode.setColumns(10);
-		
+		/*
 		JLabel lblTeachingLoad = new JLabel("Degree Name");
 		lblTeachingLoad.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblTeachingLoad.setBounds(84, 212, 100, 14);
@@ -111,7 +117,7 @@ public class DegreeViewHome {
 		degreeName.setBounds(187, 210, 297, 20);
 		frame.getContentPane().add(degreeName);
 		degreeName.setColumns(10);
-		
+		*/
 		
 		
 		JButton btnSave = new JButton("Save");
@@ -142,6 +148,7 @@ public class DegreeViewHome {
 		btnSave.setBounds(289, 413, 89, 23);
 		frame.getContentPane().add(btnSave);
 		
+		/*
 		gradSchool = new JTextField();
 		gradSchool.setBounds(187, 157, 177, 20);
 		frame.getContentPane().add(gradSchool);
@@ -151,6 +158,7 @@ public class DegreeViewHome {
 		lblDegreeNumber.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblDegreeNumber.setBounds(84, 160, 93, 14);
 		frame.getContentPane().add(lblDegreeNumber);
+		*/
 		
 		JLabel lblForeCast = new JLabel("Forecast");
 		lblForeCast.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -161,15 +169,36 @@ public class DegreeViewHome {
 		forecast.setBounds(187, 265, 86, 20);
 		frame.getContentPane().add(forecast);
 		forecast.setColumns(10);
+		if(action=="ADD"){
+			JLabel lblDegreeNumber = new JLabel("Grad School");
+			lblDegreeNumber.setFont(new Font("Tahoma", Font.PLAIN, 12));
+			lblDegreeNumber.setBounds(84, 160, 93, 14);
+			frame.getContentPane().add(lblDegreeNumber);
+			
+			JLabel lblTeachingLoad = new JLabel("Degree Name");
+			lblTeachingLoad.setFont(new Font("Tahoma", Font.PLAIN, 12));
+			lblTeachingLoad.setBounds(84, 212, 100, 14);
+			frame.getContentPane().add(lblTeachingLoad);
+			
+			degreeName = new JTextField();
+			degreeName.setBounds(187, 210, 297, 20);
+			frame.getContentPane().add(degreeName);
+			degreeName.setColumns(10);
+			
+			gradSchool = new JTextField();
+			gradSchool.setBounds(187, 157, 177, 20);
+			frame.getContentPane().add(gradSchool);
+			gradSchool.setColumns(10);
+		}
 	}
 
 
 	public void reload() {
-		// TODO Auto-generated method stub
 		
 	}
 	
 	private void addNewDegree() throws IOException, UserException {
+		
 		DegreeHome degree=new DegreeHome();
 		degree.setDegreeCode(degreeCode.getText());
 		degree.setGradSchool(gradSchool.getText());
@@ -183,11 +212,11 @@ public class DegreeViewHome {
 	private void updateDegree() throws UserException, IOException {
 		DegreeHome degree=new DegreeHome();
 		degree.setDegreeCode(degreeCode.getText());
-		degree.setGradSchool(gradSchool.getText());
-		degree.setDegreeName(degreeName.getText());
+		//degree.setGradSchool(gradSchool.getText());
+		//degree.setDegreeName(degreeName.getText());
 		degree.setForecast(forecast.getText());
 		DegreeEventHome fe=new DegreeEventHome();
-		fe.vaidateDegree(degree);
+		fe.vaidateDegreeUpdate(degree);
 		fe.updateDegree(degree);
 		
 	}
@@ -202,8 +231,8 @@ public class DegreeViewHome {
 		DegreeHome c=ce.getDegree(selected);
 		degreeCode.setText(c.getDegreeCode());
 		degreeCode.setEditable(false);
-		gradSchool.setText(c.getGradSchool());
-		degreeName.setText(c.getDegreeName());
+		//gradSchool.setText(c.getGradSchool());
+		//degreeName.setText(c.getDegreeName());
 		forecast.setText(c.getForecast());
 		
 	}

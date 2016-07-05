@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,8 +15,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
+import com.degree.Degree;
+import com.degree.DegreeEvent;
 import com.login.Login;
+import com.login.UserException;
 import com.login.UserViewMain;
+
+import javax.swing.JTextField;
 
 public class DegreeMainHome {
 
@@ -23,6 +29,7 @@ public class DegreeMainHome {
 	public String userRole;
 	private JList degreeList;
 	private JScrollPane  scrollPane;
+	private JTextField forecast;
 
 	/**
 	 * Launch the application.
@@ -45,6 +52,11 @@ public class DegreeMainHome {
 	 * @throws IOException 
 	 */
 	public DegreeMainHome() throws IOException {
+		initialize();
+	}
+
+	public DegreeMainHome(String userRole2) throws IOException {
+		userRole=userRole2;
 		initialize();
 	}
 
@@ -72,11 +84,18 @@ public class DegreeMainHome {
 		JButton btnBack = new JButton("Back");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				UserViewMain office=new UserViewMain();				
-				frame.setVisible(false);
-				office.userRole=userRole;
-				office.frame.setVisible(true);
+				UserViewMain office;
+				try {
+					office = new UserViewMain(userRole);
+					frame.setVisible(false);
+					office.userRole=userRole;
+					office.frame.setVisible(true);
 
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+				
 			}
 		});
 		btnBack.setBounds(42, 11, 89, 23);
@@ -87,7 +106,7 @@ public class DegreeMainHome {
 		lblCourseManagement.setBounds(284, 38, 165, 29);
 		frame.getContentPane().add(lblCourseManagement);
 		
-		JButton btnAdd = new JButton("Add");
+		/*JButton btnAdd = new JButton("Add");
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
@@ -99,7 +118,7 @@ public class DegreeMainHome {
 			}
 		});
 		btnAdd.setBounds(124, 302, 89, 23);
-		frame.getContentPane().add(btnAdd);
+		frame.getContentPane().add(btnAdd);*/
 		
 		JButton btnUpdate = new JButton("Update");
 		btnUpdate.addActionListener(new ActionListener() {
@@ -115,7 +134,7 @@ public class DegreeMainHome {
 		btnUpdate.setBounds(313, 302, 89, 23);
 		frame.getContentPane().add(btnUpdate);
 		
-		JButton btnDelete = new JButton("Delete");
+		/*JButton btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
@@ -128,7 +147,7 @@ public class DegreeMainHome {
 
 		});
 		btnDelete.setBounds(504, 302, 89, 23);
-		frame.getContentPane().add(btnDelete);
+		frame.getContentPane().add(btnDelete);*/
 		
 	
 		viewDegree();
@@ -142,8 +161,8 @@ public class DegreeMainHome {
 		String cList[] = new String[100];
 		int i=0;
 		for(DegreeHome c:avl){
-			cList[i]=c.getDegreeCode()+"  "+c.getDegreeName();
-			i++;
+			cList[i]=c.getDegreeCode()+"   - "+c.getForecast();
+			i++; 
 		}
 		degreeList = new JList(cList);		
 		degreeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -179,7 +198,7 @@ public class DegreeMainHome {
 	}
 
 	private void addDegree() throws Exception {
-		DegreeViewHome facultyFrame= new DegreeViewHome();
+		DegreeViewHome facultyFrame= new DegreeViewHome("ADD");
 		facultyFrame.reload();
 		frame.setVisible(false);
 		facultyFrame.frame.setVisible(true);
@@ -188,16 +207,57 @@ public class DegreeMainHome {
 	}
 	
 	private void updateDegree() throws Exception {
-		DegreeViewHome facultyFrame= new DegreeViewHome();
 		if(degreeList.getSelectedValue() != null){
-				String selected=degreeList.getSelectedValue().toString().split(" ")[0];
-				facultyFrame.viewSelected(selected);
-				frame.setVisible(false);
-				facultyFrame.frame.setVisible(true);
-				facultyFrame.action="UPDATE";
-		}else
-			dialog("Please select a Course");
-	}
-	
-	
+			JLabel lblForecast = new JLabel("Forecast");
+			lblForecast.setFont(new Font("Tahoma", Font.PLAIN, 12));
+			lblForecast.setBounds(226, 354, 104, 14);
+			frame.getContentPane().add(lblForecast);
+			
+			forecast = new JTextField();
+			forecast.setBounds(365, 352, 86, 20);
+			frame.getContentPane().add(forecast);
+			forecast.setColumns(10);
+			
+			DegreeEventHome facultyFrame= new DegreeEventHome();
+			JButton btnSave = new JButton("Save");
+			btnSave.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					try{
+					if(forecast.getText().toString().equals("")||forecast.getText().toString().equals(null))
+						throw new UserException("Please enter forcast value ");
+					if(Pattern.matches("[a-zA-Z]+", forecast.getText().toString()) == true)
+						throw new UserException("Degree capacity should be numaric ");
+					DegreeHome d=new DegreeHome();
+					d.setDegreeCode(degreeList.getSelectedValue().toString().split(" ")[0]);
+					d.setForecast(forecast.getText());
+					DegreeEventHome de= new DegreeEventHome();
+					de.updateDegree(d);
+					dialog("Forcast Updated");					 
+					DegreeMainHome degreeh = new DegreeMainHome(userRole);
+					frame.setVisible(false);
+					degreeh.frame.setVisible(true);
+					}catch(Exception e){
+						dialog(e.getMessage().toString());
+					}
+				}
+			});
+			btnSave.setBounds(482, 351, 89, 23);
+			frame.getContentPane().add(btnSave);
+			
+			
+			
+			forecast.updateUI();
+			lblForecast.updateUI();
+			btnSave.updateUI();
+
+			String selected=degreeList.getSelectedValue().toString().split(" ")[0];
+			DegreeHome d=new DegreeHome();
+			d=facultyFrame.getDegree(selected);
+			forecast.setText(d.getForecast());
+			
+	}else
+		dialog("Please select a Course");
+		
+		
+			}
 }

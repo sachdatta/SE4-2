@@ -33,16 +33,24 @@ public class DegreeView {
 	JFrame frame;
 	public String action="ADD";
 	public String userRole;
-	private JComboBox degreeCode ;
-	private JComboBox type;
-	private JTextField courses;
+	private JTextField coursesRequired;
 	private JList courseList;
-	private JTextField degreeHours;
-	private JTextField degreeDescription;
+	private JList courseListEle1;
+	private JList courseListEle2;
+	private JTextField degreeHoursRequired;
+	private JTextField degreeDescriptionRequired;
 	private JScrollPane scrollPane1;
-	private JScrollPane scrollPane2;
-	private String courseListValues[] = new String[1000];
+	//private JScrollPane scrollPane2;
+	private JScrollPane scrollPane3;
+	private JScrollPane scrollPane4;
 	private String cList[] = new String[1000];
+	private JTextField degreeDescriptionElective1;
+	private JTextField degreeHoursElective1;
+	private JTextField coursesElective1;
+	private JTextField degreeDescriptionElective2;
+	private JTextField degreeHoursElective2;
+	private JTextField coursesElective2;
+	private JTextField degreeCode;
 
 	/**
 	 * Launch the application.
@@ -66,6 +74,11 @@ public class DegreeView {
 	public DegreeView() throws Exception {
 		initialize();
 	}
+	public DegreeView(String role) throws Exception {
+		userRole=role;
+		initialize();
+		
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -77,6 +90,12 @@ public class DegreeView {
 		frame.setBounds(100, 100, 728, 498);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+		
+		
+		JLabel lblLoggesAs = new JLabel("Logged as "+userRole+" User");
+		lblLoggesAs.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblLoggesAs.setBounds(141, 14, 129, 14);
+		frame.getContentPane().add(lblLoggesAs);
 		
 		JButton btnLogout = new JButton("Logout");
 		btnLogout.addActionListener(new ActionListener() {
@@ -95,7 +114,7 @@ public class DegreeView {
 			public void actionPerformed(ActionEvent arg0) {
 				DegreeMain degree;
 				try {
-					degree = new DegreeMain();
+					degree = new DegreeMain(userRole);
 					frame.setVisible(false);
 					degree.userRole=userRole;
 					degree.frame.setVisible(true);
@@ -145,18 +164,18 @@ public class DegreeView {
 
 		});
 		btnSave.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnSave.setBounds(286, 395, 89, 23);
+		btnSave.setBounds(286, 436, 89, 23);
 		frame.getContentPane().add(btnSave);
 		
 		JLabel lblElective_1 = new JLabel("Courses");
 		lblElective_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblElective_1.setBounds(84, 278, 89, 14);
+		lblElective_1.setBounds(86, 210, 117, 14);
 		frame.getContentPane().add(lblElective_1);
 		
-		courses = new JTextField();
-		courses.setBounds(187, 276, 177, 20);
-		frame.getContentPane().add(courses);
-		courses.setColumns(10);
+		coursesRequired = new JTextField();
+		coursesRequired.setBounds(187, 208, 251, 20);
+		frame.getContentPane().add(coursesRequired);
+		coursesRequired.setColumns(10);
 		/*
 		courseList = new JComboBox();
 		courseList.addActionListener(new ActionListener() {
@@ -173,40 +192,23 @@ public class DegreeView {
 		
 		JLabel lblHoursRequired = new JLabel("Hours Required");
 		lblHoursRequired.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblHoursRequired.setBounds(84, 161, 100, 14);
+		lblHoursRequired.setBounds(84, 181, 100, 14);
 		frame.getContentPane().add(lblHoursRequired);
 		
-		degreeHours = new JTextField();
-		degreeHours.setBounds(187, 153, 86, 20);
-		frame.getContentPane().add(degreeHours);
-		degreeHours.setColumns(10);
+		degreeHoursRequired = new JTextField();
+		degreeHoursRequired.setBounds(187, 179, 86, 20);
+		frame.getContentPane().add(degreeHoursRequired);
+		degreeHoursRequired.setColumns(10);
 		
 		JLabel lblDescription = new JLabel("Description");
 		lblDescription.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblDescription.setBounds(84, 123, 89, 14);
+		lblDescription.setBounds(84, 150, 89, 14);
 		frame.getContentPane().add(lblDescription);
 		
-		degreeDescription = new JTextField();
-		degreeDescription.setBounds(187, 121, 177, 20);
-		frame.getContentPane().add(degreeDescription);
-		degreeDescription.setColumns(10);
-		
-		JLabel lblType = new JLabel("Type");
-		lblType.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblType.setBounds(84, 194, 46, 14);
-		frame.getContentPane().add(lblType);
-		
-		type = new JComboBox();
-		type.setBounds(187, 192, 88, 20);
-		frame.getContentPane().add(type);
-		type.addItem("");
-		type.addItem("Required");
-		type.addItem("Elective");
-		
-		degreeCode = new JComboBox();
-		degreeCode.setBounds(187, 85, 86, 20);
-		frame.getContentPane().add(degreeCode);
-		degreeCode.addItem("");
+		degreeDescriptionRequired = new JTextField();
+		degreeDescriptionRequired.setBounds(187, 144, 177, 20);
+		frame.getContentPane().add(degreeDescriptionRequired);
+		degreeDescriptionRequired.setColumns(10);
 		
 		
 		JButton btnAdd = new JButton("Add");
@@ -216,21 +218,21 @@ public class DegreeView {
 				if(-1!=(courseList.getSelectedIndex())){
 					
 					String selectedId=courseList.getSelectedValue().toString();
-					if(courses.getText().equals("")||courses.getText().equals(null))
-						courses.setText(selectedId);
-					else if(courses.getText().toString().contains(selectedId)){					
+					if(coursesRequired.getText().equals("")||coursesRequired.getText().equals(null))
+						coursesRequired.setText(selectedId);
+					else if(coursesRequired.getText().toString().contains(selectedId)){					
 					}
 					else{
-						String courses1=courses.getText().toString();
+						String courses1=coursesRequired.getText().toString();
 						courses1=courses1+","+selectedId;
-						courses.setText(courses1);
+						coursesRequired.setText(courses1);
 					}
 
 				}else
 					dialog("Please Select Course");
 			}
 		});
-		btnAdd.setBounds(380, 275, 89, 23);
+		btnAdd.setBounds(448, 207, 89, 23);
 		frame.getContentPane().add(btnAdd);
 		
 		
@@ -252,16 +254,153 @@ public class DegreeView {
 		courseList = new JList<Object>(cList);		
 		courseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane1 = new JScrollPane(courseList);
-		scrollPane1.setBounds(479, 193, 86, 194);
-		frame.getContentPane().add(scrollPane1);	
+		scrollPane1.setBounds(547, 110, 86, 111);
+		frame.getContentPane().add(scrollPane1);
+		
+		courseListEle1 = new JList<Object>(cList);		
+		courseListEle1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPane3 = new JScrollPane(courseListEle1);
+		scrollPane3.setBounds(547, 226, 86, 111);
+		frame.getContentPane().add(scrollPane3);
+		
+
+		courseListEle2 = new JList<Object>(cList);		
+		courseListEle2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPane4 = new JScrollPane(courseListEle2);
+		scrollPane4.setBounds(547, 344, 86, 111);
+		frame.getContentPane().add(scrollPane4);
 		
 		
+		JLabel lblRequiredCourse = new JLabel("Required Course");
+		lblRequiredCourse.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblRequiredCourse.setBounds(32, 118, 152, 14);
+		frame.getContentPane().add(lblRequiredCourse);
 		
-		DegreeEventHome de=new DegreeEventHome();
-		ArrayList<DegreeHome> d=new ArrayList<DegreeHome>();
-		d=de.getAllDegrees();
-		for(DegreeHome dh:d)
-			degreeCode.addItem(dh.getDegreeCode());
+		JLabel lblElective = new JLabel("Elective 1");
+		lblElective.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblElective.setBounds(32, 235, 152, 14);
+		frame.getContentPane().add(lblElective);
+		
+		JLabel label = new JLabel("Description");
+		label.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		label.setBounds(84, 260, 89, 14);
+		frame.getContentPane().add(label);
+		
+		degreeDescriptionElective1 = new JTextField();
+		degreeDescriptionElective1.setColumns(10);
+		degreeDescriptionElective1.setBounds(187, 258, 177, 20);
+		frame.getContentPane().add(degreeDescriptionElective1);
+		
+		JLabel label_1 = new JLabel("Hours Required");
+		label_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		label_1.setBounds(84, 291, 100, 14);
+		frame.getContentPane().add(label_1);
+		
+		degreeHoursElective1 = new JTextField();
+		degreeHoursElective1.setColumns(10);
+		degreeHoursElective1.setBounds(187, 289, 86, 20);
+		frame.getContentPane().add(degreeHoursElective1);
+		
+		JLabel label_2 = new JLabel("Courses");
+		label_2.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		label_2.setBounds(84, 325, 117, 14);
+		frame.getContentPane().add(label_2);
+		
+		coursesElective1 = new JTextField();
+		coursesElective1.setColumns(10);
+		coursesElective1.setBounds(187, 316, 251, 20);
+		frame.getContentPane().add(coursesElective1);
+		
+		JLabel lblElective_2 = new JLabel("Elective 2");
+		lblElective_2.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblElective_2.setBounds(32, 345, 152, 14);
+		frame.getContentPane().add(lblElective_2);
+		
+		JLabel label_3 = new JLabel("Description");
+		label_3.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		label_3.setBounds(84, 361, 89, 14);
+		frame.getContentPane().add(label_3);
+		
+		degreeDescriptionElective2 = new JTextField();
+		degreeDescriptionElective2.setColumns(10);
+		degreeDescriptionElective2.setBounds(187, 359, 177, 20);
+		frame.getContentPane().add(degreeDescriptionElective2);
+		
+		JLabel label_4 = new JLabel("Hours Required");
+		label_4.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		label_4.setBounds(84, 389, 100, 14);
+		frame.getContentPane().add(label_4);
+		
+		degreeHoursElective2 = new JTextField();
+		degreeHoursElective2.setColumns(10);
+		degreeHoursElective2.setBounds(187, 390, 86, 20);
+		frame.getContentPane().add(degreeHoursElective2);
+		
+		JLabel label_5 = new JLabel("Courses");
+		label_5.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		label_5.setBounds(84, 416, 117, 14);
+		frame.getContentPane().add(label_5);
+		
+		coursesElective2 = new JTextField();
+		coursesElective2.setColumns(10);
+		coursesElective2.setBounds(187, 414, 251, 20);
+		frame.getContentPane().add(coursesElective2);
+		
+		JButton addEle1 = new JButton("Add");
+		addEle1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+					if(-1!=(courseListEle1.getSelectedIndex())){
+					
+					String selectedId=courseListEle1.getSelectedValue().toString();
+					if(coursesElective1.getText().equals("")||coursesElective1.getText().equals(null))
+						coursesElective1.setText(selectedId);
+					else if(coursesElective1.getText().toString().contains(selectedId)){					
+					}
+					else{
+						String courses1=coursesElective1.getText().toString();
+						courses1=courses1+","+selectedId;
+						coursesElective1.setText(courses1);
+					}
+
+				}else
+					dialog("Please Select Course");
+
+			}
+		});
+		addEle1.setBounds(448, 315, 89, 23);
+		frame.getContentPane().add(addEle1);
+		
+		JButton addEle2 = new JButton("Add");
+		addEle2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+					if(-1!=(courseListEle2.getSelectedIndex())){
+					
+					String selectedId=courseListEle2.getSelectedValue().toString();
+					if(coursesElective2.getText().equals("")||coursesElective2.getText().equals(null))
+						coursesElective2.setText(selectedId);
+					else if(coursesElective2.getText().toString().contains(selectedId)){					
+					}
+					else{
+						String courses1=coursesElective2.getText().toString();
+						courses1=courses1+","+selectedId;
+						coursesElective2.setText(courses1);
+					}
+
+				}else
+					dialog("Please Select Course");
+
+
+				
+			}
+		});
+		addEle2.setBounds(448, 413, 89, 23);
+		frame.getContentPane().add(addEle2);
+		
+		degreeCode = new JTextField();
+		degreeCode.setBounds(187, 85, 86, 20);
+		frame.getContentPane().add(degreeCode);
+		degreeCode.setColumns(10);
+		
 		
 	}
 
@@ -271,27 +410,76 @@ public class DegreeView {
 	}
 	
 	private void addNewDegree() throws IOException, UserException {
+		ArrayList<Degree> degreeList= new ArrayList<Degree>();
+		
 		Degree degree=new Degree();	
-		degree.setDegreeCode(degreeCode.getSelectedItem().toString());
-		degree.setDegreeDescription(degreeDescription.getText());
-		degree.setDegreeHours(degreeHours.getText());
-		degree.setType(type.getSelectedItem().toString());
-		degree.setDegreeCourses(courses.getText());
+		degree.setDegreeCode(degreeCode.getText().toString());
+		degree.setDegreeDescription(degreeDescriptionRequired.getText());
+		degree.setDegreeHours(degreeHoursRequired.getText());
+		degree.setType("Required");
+		degree.setDegreeCourses(coursesRequired.getText());
+		
+		Degree degreeEle1=new Degree();	
+		degreeEle1.setDegreeCode(degreeCode.getText().toString());
+		degreeEle1.setDegreeDescription(degreeDescriptionElective1.getText());
+		degreeEle1.setDegreeHours(degreeHoursElective1.getText());
+		degreeEle1.setType("Elective");
+		degreeEle1.setDegreeCourses(coursesElective1.getText());
+		
+		
+		Degree degreeEle2=new Degree();	
+		degreeEle2.setDegreeCode(degreeCode.getText().toString());
+		degreeEle2.setDegreeDescription(degreeDescriptionElective2.getText());
+		degreeEle2.setDegreeHours(degreeHoursElective2.getText());
+		degreeEle2.setType("Elective");
+		degreeEle2.setDegreeCourses(coursesElective2.getText());
+		
+		
 		DegreeEvent fe=new DegreeEvent();
 		fe.vaidateDegree(degree);
-		fe.addDegree(degree);
+		fe.vaidateDegree(degreeEle1);
+		fe.vaidateDegree(degreeEle2);
+		degreeList.add(degree);
+		degreeList.add(degreeEle1);
+		degreeList.add(degreeEle2);		
+		fe.addDegree(degreeList);
 	}
 	
 	private void updateDegree() throws UserException, IOException {
+		ArrayList<Degree> degreeList= new ArrayList<Degree>();
+		
 		Degree degree=new Degree();	
-		degree.setDegreeCode(degreeCode.getSelectedItem().toString());
-		degree.setDegreeDescription(degreeDescription.getText());
-		degree.setDegreeHours(degreeHours.getText());
-		degree.setType(type.getSelectedItem().toString());
-		degree.setDegreeCourses(courses.getText());
+		degree.setDegreeCode(degreeCode.getText().toString());
+		degree.setDegreeDescription(degreeDescriptionRequired.getText());
+		degree.setDegreeHours(degreeHoursRequired.getText());
+		degree.setType("Required");
+		degree.setDegreeCourses(coursesRequired.getText());
+		
+		Degree degreeEle1=new Degree();	
+		degreeEle1.setDegreeCode(degreeCode.getText().toString());
+		degreeEle1.setDegreeDescription(degreeDescriptionElective1.getText());
+		degreeEle1.setDegreeHours(degreeHoursElective1.getText());
+		degreeEle1.setType("Elective");
+		degreeEle1.setDegreeCourses(coursesElective1.getText());
+		
+		
+		Degree degreeEle2=new Degree();	
+		degreeEle2.setDegreeCode(degreeCode.getText().toString());
+		degreeEle2.setDegreeDescription(degreeDescriptionElective2.getText());
+		degreeEle2.setDegreeHours(degreeHoursElective2.getText());
+		degreeEle2.setType("Elective");
+		degreeEle2.setDegreeCourses(coursesElective2.getText());
+		
+		
 		DegreeEvent fe=new DegreeEvent();
 		fe.vaidateDegree(degree);
-		fe.updateDegree(degree);
+		fe.vaidateDegree(degreeEle1);
+		fe.vaidateDegree(degreeEle2);
+		degreeList.add(degree);
+		degreeList.add(degreeEle1);
+		degreeList.add(degreeEle2);		
+	
+		fe.updateDegree(degreeList);
 		
 	}
 	
@@ -300,13 +488,29 @@ public class DegreeView {
 		JOptionPane.showMessageDialog(frame, msg);
 	}
 
-	public void viewSelected(String degreeCode1, String degreeDescription1) throws IOException {
+	public void viewSelected(String degreeCode1) throws IOException {
 		DegreeEvent ce=new DegreeEvent();
-		Degree c=ce.getDegree(degreeCode1,degreeDescription1);
-		degreeCode.setSelectedItem(c.getDegreeCode());
-		degreeDescription.setText(c.getDegreeDescription());
-		type.setSelectedItem(c.getType());
-		degreeHours.setText(c.getDegreeHours());
-		courses.setText(c.getDegreeCourses());
+		degreeCode.setEditable(false);
+		ArrayList<Degree> d=ce.getDegree(degreeCode1);
+		for(Degree c:d){
+			if(c.getType().equals("Required")){
+				degreeCode.setText(c.getDegreeCode());
+				degreeDescriptionRequired.setText(c.getDegreeDescription());
+				degreeHoursRequired.setText(c.getDegreeHours());
+				coursesRequired.setText(c.getDegreeCourses());				
+			}
+			if(c.getType().equals("Elective")&&( degreeDescriptionElective1.getText().equals("")||degreeDescriptionElective1.getText().equals(null))){
+				degreeDescriptionElective1.setText(c.getDegreeDescription());
+				degreeHoursElective1.setText(c.getDegreeHours());
+				coursesElective1.setText(c.getDegreeCourses());
+			}
+			if(c.getType().equals("Elective")&&!( degreeDescriptionElective1.getText().equals("")||degreeDescriptionElective1.getText().equals(null))){
+				degreeDescriptionElective2.setText(c.getDegreeDescription());
+				degreeHoursElective2.setText(c.getDegreeHours());
+				coursesElective2.setText(c.getDegreeCourses());	
+			}
+			
+			
+		}
 	}
 }

@@ -17,7 +17,8 @@ import com.user.User;
 
 public class DegreeEvent {
 	
-	private static final String FILE_PATH =  "C:/Input/DegreeCourseDetails.csv";;
+	private static final String FILE_PATH =  "C:/Input/DegreeCourseDetails.csv";
+	private static final Object[] Integer = null;;
 
 	public ArrayList<Degree> getAllDegree() throws IOException {
 		CsvReader degree = new CsvReader(FILE_PATH);
@@ -36,9 +37,8 @@ public class DegreeEvent {
 		return degreeList;			
 	}
 
-	public void addDegree(Degree degree) throws IOException, UserException {
-		vaidate(degree);
-		saveDegree(degree);
+	public void addDegree(ArrayList<Degree> degreeList) throws IOException, UserException {
+		saveDegree(degreeList);
 	}
 
 	private void vaidate(Degree degree) throws IOException, UserException {
@@ -51,10 +51,10 @@ public class DegreeEvent {
 		}
 	}
 
-	private void saveDegree(Degree degree) throws IOException {
+	private void saveDegree(ArrayList<Degree> degreeList2) throws IOException {
 		ArrayList<Degree> degreeList=new ArrayList<Degree>();
 		degreeList=getAllDegree();
-		degreeList.add(degree);
+		degreeList.addAll(degreeList2);
 		updateSheet(degreeList);
 		
 	}
@@ -128,18 +128,24 @@ public class DegreeEvent {
 				
 	}
 
-	public void deleteDegree(String degreeCode, String degreeDescription) throws Exception {
+	@SuppressWarnings("null")
+	public void deleteDegree(String degreeCode) throws Exception {
 		ArrayList<Degree> degreeList=new ArrayList<Degree>();
 		try {
-			degreeList=getAllDegree();
-			int index=0;
+			degreeList=getAllDegree();			
+			Integer[] index=new Integer[3];
+			int count=0;
+			int i=0;
 			for(Degree c:degreeList){
-				index++;
-				if(c.getDegreeCode().equals(degreeCode)&&c.getDegreeDescription().equals(degreeDescription)){
-					break;
+				i++;
+				if(c.getDegreeCode().equals(degreeCode)){
+					index[count]=i;
+					count++;
 				}
 			}
-			degreeList.remove(index-1);
+			for(int j=2;j>=0;j--){
+				degreeList.remove(index[j]-1);
+			}			
 			updateSheet(degreeList);
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
@@ -148,27 +154,30 @@ public class DegreeEvent {
 		
 	}
 
-	public void updateDegree(Degree degree) throws IOException {
+	public void updateDegree(ArrayList<Degree> degreeList2) throws IOException {
 		ArrayList<Degree> degreeList=new ArrayList<Degree>();
 		degreeList=getAllDegree();
+		for(Degree d:degreeList2){
 			for(Degree c:degreeList){
-				if(c.getDegreeCode().equals(degree.getDegreeCode())&& c.getDegreeDescription().equals(degree.getDegreeDescription())){
-					c.setDegreeDescription(degree.getDegreeDescription());
-					c.setDegreeHours(degree.getDegreeHours());
-					c.setType(degree.getType());
-					c.setDegreeCourses(degree.getDegreeCourses());
+				if(c.getDegreeCode().equals(d.getDegreeCode())&& c.getType().equals(d.getType())){
+					c.setDegreeDescription(d.getDegreeDescription());
+					c.setDegreeHours(d.getDegreeHours());
+					c.setType(d.getType());
+					c.setDegreeCourses(d.getDegreeCourses());
 				}
 			}
+		}
 			updateSheet(degreeList);
 	}
 
-	public Degree getDegree(String degreeCode, String degreeDescription) throws IOException {
+	public ArrayList<Degree> getDegree(String degreeCode) throws IOException {
 		ArrayList<Degree> degreeList=getAllDegree();
+		ArrayList<Degree> degree=new ArrayList<Degree>();
 		for(Degree c:degreeList){
-			if(c.getDegreeCode().equals(degreeCode)&&c.getDegreeDescription().equals(degreeDescription))
-				return c;
+			if(c.getDegreeCode().equals(degreeCode))
+				degree.add(c);
 		}		
-		return null;
+		return degree;
 	}
 
 }

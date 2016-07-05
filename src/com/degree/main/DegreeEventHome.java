@@ -107,6 +107,13 @@ public class DegreeEventHome {
 			throw new UserException("Degree capacity should be numaric ");
 		
 	}
+	
+	public void vaidateDegreeUpdate(DegreeHome degree) throws UserException {		
+		if(Pattern.matches("[a-zA-Z]+", degree.getForecast()) == true)
+			throw new UserException("Degree capacity should be numaric ");
+		
+	}
+	
 
 	public void deleteDegree(String degreeId) throws Exception {
 		ArrayList<DegreeHome> degreeList=new ArrayList<DegreeHome>();
@@ -133,8 +140,8 @@ public class DegreeEventHome {
 		degreeList=getAllDegrees();
 			for(DegreeHome c:degreeList){
 				if(c.getDegreeCode().equals(degree.getDegreeCode())){
-					c.setDegreeName(degree.getDegreeName());
-					c.setGradSchool(degree.getGradSchool());	
+					//c.setDegreeName(degree.getDegreeName());
+					//c.setGradSchool(degree.getGradSchool());	
 					c.setForecast(degree.getForecast());
 				}
 			}
