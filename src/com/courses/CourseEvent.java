@@ -1,18 +1,14 @@
 package com.courses;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.regex.Pattern;
 
 import com.courses.Courses;
 import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
 import com.login.UserException;
-import com.user.User;
 
 public class CourseEvent {
 	

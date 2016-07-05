@@ -10,6 +10,7 @@ import com.login.UserViewMain;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -47,6 +48,11 @@ public class CourseMain {
 	public CourseMain() throws Exception {
 		initialize();
 	}
+	public CourseMain(String role) throws Exception {
+		userRole=role;
+		initialize();
+		
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -57,6 +63,11 @@ public class CourseMain {
 		frame.setBounds(100, 100, 717, 486);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+		
+		JLabel lblLoggesAs = new JLabel("Logged as "+userRole+" User");
+		lblLoggesAs.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblLoggesAs.setBounds(141, 14, 129, 14);
+		frame.getContentPane().add(lblLoggesAs);
 		
 		JLabel lblCourseManagement = new JLabel("Course Management");
 		lblCourseManagement.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -77,12 +88,19 @@ public class CourseMain {
 		JButton btnBack = new JButton("Back");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				UserViewMain office=new UserViewMain();
-				
-				frame.setVisible(false);
-				office.userRole=userRole;
-				office.frame.setVisible(true);
+				UserViewMain office;
+				try {
+					office = new UserViewMain(userRole);
+					frame.setVisible(false);
+					office.userRole=userRole;
+					office.frame.setVisible(true);
 
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
 			}
 		});
 		btnBack.setBounds(42, 11, 89, 23);
@@ -155,7 +173,7 @@ public class CourseMain {
 	}
 	
 	private void addCourse() throws Exception{
-		CourseView courseFrame= new CourseView();
+		CourseView courseFrame= new CourseView(userRole);
 		courseFrame.reload();
 		frame.setVisible(false);
 		courseFrame.frame.setVisible(true);
@@ -163,7 +181,7 @@ public class CourseMain {
 	}
 	
 	private void updateCourse() throws Exception{
-		CourseView courseFrame= new CourseView();
+		CourseView courseFrame= new CourseView(userRole);
 		if(courseList.getSelectedValue() != null){
 				String selected=courseList.getSelectedValue().toString().substring(0, 9);
 				courseFrame.viewSelected(selected);

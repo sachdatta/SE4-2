@@ -49,6 +49,12 @@ public class CourseView {
 	public CourseView() throws Exception {
 		initialize();
 	}
+	
+	public CourseView(String role) throws Exception {
+		userRole=role;
+		initialize();
+		
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -59,6 +65,11 @@ public class CourseView {
 		frame.setBounds(100, 100, 729, 491);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+		
+		JLabel lblLoggesAs = new JLabel("Logged as "+userRole+" User");
+		lblLoggesAs.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblLoggesAs.setBounds(141, 14, 129, 14);
+		frame.getContentPane().add(lblLoggesAs);
 		
 		JLabel lblCourses = new JLabel("Courses");
 		lblCourses.setHorizontalAlignment(SwingConstants.CENTER);
@@ -178,7 +189,7 @@ public class CourseView {
 			public void actionPerformed(ActionEvent arg0) {
 				CourseMain office;
 				try {
-					office = new CourseMain();
+					office = new CourseMain(userRole);
 					frame.setVisible(false);
 					office.userRole=userRole;
 					office.frame.setVisible(true);
