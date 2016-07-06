@@ -50,6 +50,11 @@ public class UserView {
 		initialize();
 	}
 
+	public UserView(String userRole2) {
+		userRole=userRole2;
+		initialize();
+	}
+
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -77,7 +82,7 @@ public class UserView {
 			public void actionPerformed(ActionEvent arg0) {
 				UserMain room;
 				try {
-					room = new UserMain();
+					room = new UserMain(userRole);
 					frame.setVisible(false);
 					room.userRole=userRole;
 					room.frame.setVisible(true);
@@ -138,7 +143,7 @@ public class UserView {
 					if(action.equals("ADD")){
 					addNewUser();
 					dialog("User added sucessfully");
-					UserView courseFrame=new UserView();
+					UserView courseFrame=new UserView(userRole);
 					frame.setVisible(false);
 					courseFrame.frame.setVisible(true);
 					}else if(action.equals("UPDATE")){
